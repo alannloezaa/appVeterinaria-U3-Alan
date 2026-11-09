@@ -1,5 +1,6 @@
 @import "tailwindcss";
-
-body {
-  margin: 0;
-}
+body { margin: 0; font-family: system-ui, sans-serif; }
+button, select { cursor: pointer; }
+button:disabled, input:disabled { cursor: wait; opacity: 0.65; }
+:focus-visible { outline: 3px solid #0f766e; outline-offset: 3px; }
+input, select { font: inherit; }
