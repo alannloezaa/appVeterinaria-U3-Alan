@@ -1,7 +1,7 @@
 # Guía para explicar la actividad
 
 La idea principal es sencilla: **React muestra y recoge los datos, Express
-atiende la solicitud y SQLite guarda la cita en un archivo.** La interfaz y la
+atiende la solicitud y MySQL guarda la cita en la tabla `citas`.** La interfaz y la
 base de datos tienen responsabilidades distintas.
 
 ## El recorrido al guardar una cita
@@ -23,8 +23,8 @@ Ejemplo de práctica: registrar una mascota llamada Nala. Es un caso ficticio.
 6. **Repositorio.** Ejecuta `INSERT INTO citas ... VALUES (?, ?, ?, ?, ?, ?)`.
    Los valores se pasan separados de la consulta, mediante parámetros. Después
    recupera la fila insertada por su identificador.
-7. **Base de datos.** SQLite escribe la fila en el archivo
-   `backend/data/veterinaria.sqlite`. Su índice único evita dos reservas
+7. **Base de datos.** MySQL escribe la fila en `veterinaria_db.citas`.
+   El índice único sobre fecha, hora y horario activo evita dos reservas
    activas del mismo horario, incluso si se solicitan al mismo tiempo.
 8. **Respuesta.** El controlador devuelve **201 Created**, un mensaje y la
    cita completa con su id y estado `solicitada`.
@@ -74,7 +74,7 @@ asíncronos; aquí se conserva `asyncHandler` porque forma parte del ejercicio.
 
 El estado de React se borra al recargar la página. Al montarse otra vez, la
 pantalla ejecuta **GET /api/citas**, y el repositorio vuelve a leer las filas
-de SQLite. Por eso reaparecen.
+de MySQL. Por eso reaparecen.
 
 Recargar sólo prueba que React consultó de nuevo. Para comprobar mejor la
 persistencia, también se cerró el proceso del backend, se inició otra vez y

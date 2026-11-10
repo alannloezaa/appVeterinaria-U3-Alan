@@ -1,4 +1,4 @@
-import { database, probarConexion } from "./config/database.js";
+import { pool, probarConexion } from "./config/database.js";
 import { app } from "./app.js";
 
 async function iniciarServidor(): Promise<void> {
@@ -9,14 +9,15 @@ async function iniciarServidor(): Promise<void> {
   });
   server.on("error", (error) => {
     console.error("No fue posible iniciar el servidor:", error.message);
-    database.close();
+    void pool.end();
     process.exitCode = 1;
   });
-  const cerrar = () => server.close(() => { database.close(); });
+  const cerrar = () => server.close(() => { void pool.end(); });
   process.once("SIGINT", cerrar);
   process.once("SIGTERM", cerrar);
 }
 iniciarServidor().catch((error: unknown) => {
-  console.error("No fue posible iniciar el servidor:", error);
+  console.error("No fue posible iniciar el servidor. Revisa MySQL y backend/.env; prepara la base con npm run db:init.", error instanceof Error ? error.message : error);
+  void pool.end();
   process.exitCode = 1;
 });

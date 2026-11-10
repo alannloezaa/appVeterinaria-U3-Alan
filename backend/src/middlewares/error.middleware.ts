@@ -21,11 +21,16 @@ export const manejarErrores: ErrorRequestHandler = (error: unknown, _req, res, _
     res.status(413).json({ mensaje: "La solicitud es demasiado grande." });
     return;
   }
-  if (error instanceof Error && "errcode" in error && error.errcode === 2067 &&
-      error.message.includes("citas.fecha, citas.hora")) {
+  if (error instanceof Error && "code" in error && error.code === "ER_DUP_ENTRY" &&
+      error.message.includes("citas_horario_activo")) {
     res.status(409).json({ mensaje: "Ya existe una cita activa en ese horario." });
     return;
   }
   console.error(error);
+  if (error instanceof Error && "code" in error &&
+      ["ECONNREFUSED", "PROTOCOL_CONNECTION_LOST", "ETIMEDOUT"].includes(String(error.code))) {
+    res.status(503).json({ mensaje: "No fue posible conectar con MySQL. Comprueba que el servidor esté iniciado." });
+    return;
+  }
   res.status(500).json({ mensaje: "No fue posible completar la operación. Inténtalo de nuevo." });
 };

@@ -10,9 +10,10 @@
     "preview": "vite preview",
     "dev:frontend": "vite",
     "dev:backend": "npm --prefix backend run dev",
-    "test": "npm --prefix backend test",
+    "test": "node scripts/probar.mjs",
     "build:all": "npm run build && npm --prefix backend run build",
-    "setup": "npm install && npm --prefix backend install"
+    "setup": "npm install && npm --prefix backend install",
+    "db:init": "npm --prefix backend run db:init"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",

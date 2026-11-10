@@ -30,7 +30,7 @@ if ([version]$nodeVersion.TrimStart('v') -lt [version]'22.13.0') {
 }
 $env:PATH = (Split-Path -Parent $nodeExe) + ';' + $env:PATH
 
-if (-not (Test-Path -LiteralPath 'node_modules\vite') -or -not (Test-Path -LiteralPath 'backend\node_modules\tsx')) {
+if (-not (Test-Path -LiteralPath 'node_modules\vite') -or -not (Test-Path -LiteralPath 'backend\node_modules\tsx') -or -not (Test-Path -LiteralPath 'backend\node_modules\mysql2')) {
     Write-Host 'Instalando dependencias. La primera vez se necesita internet.'
     $npmCommand = Get-Command npm.cmd -ErrorAction SilentlyContinue
     if ($npmCommand) {
@@ -49,6 +49,28 @@ if (-not (Test-Path -LiteralPath 'node_modules\vite') -or -not (Test-Path -Liter
         } finally { Pop-Location }
     } else {
         throw 'No se encontró npm. Reinstala Node.js con npm incluido.'
+    }
+}
+
+# En este equipo se puede usar una instancia portable, sin servicio de Windows.
+# El descriptor contiene rutas locales y está excluido de Git y del ZIP.
+if (Test-Path -LiteralPath '.mysql-local.json') {
+    $taskMysql = Get-Content -LiteralPath '.mysql-local.json' -Raw | ConvertFrom-Json
+    function Test-LocalMysql {
+        $taskSocket = [System.Net.Sockets.TcpClient]::new()
+        try { return $taskSocket.ConnectAsync('127.0.0.1', [int]$taskMysql.port).Wait(400) -and $taskSocket.Connected }
+        catch { return $false }
+        finally { $taskSocket.Dispose() }
+    }
+    if (-not (Test-LocalMysql)) {
+        if (-not (Test-Path -LiteralPath $taskMysql.executable) -or -not (Test-Path -LiteralPath $taskMysql.defaultsFile)) {
+            throw 'No se encontró el MySQL portable de este equipo. Inicia tu servidor MySQL y revisa backend/.env.'
+        }
+        Write-Host 'Iniciando MySQL local...'
+        Start-Process -FilePath $taskMysql.executable -ArgumentList @('"--defaults-file=' + $taskMysql.defaultsFile + '"') -WindowStyle Hidden
+        $taskDeadline = (Get-Date).AddSeconds(20)
+        while (-not (Test-LocalMysql) -and (Get-Date) -lt $taskDeadline) { Start-Sleep -Milliseconds 250 }
+        if (-not (Test-LocalMysql)) { throw 'MySQL no inició. Revisa work/mysql-local/mysql-error.log.' }
     }
 }
 

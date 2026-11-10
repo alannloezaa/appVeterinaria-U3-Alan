@@ -1,0 +1,7 @@
+{
+  "motor": "MySQL",
+  "respaldoRestauradoEnBaseTemporal": true,
+  "registrosRestaurados": 7,
+  "registrosActuales": 7,
+  "nalaConfirmada": true
+}

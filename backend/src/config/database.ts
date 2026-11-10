@@ -1,21 +1,27 @@
-import { mkdirSync, readFileSync } from "node:fs";
-import { dirname, isAbsolute, resolve } from "node:path";
+import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { DatabaseSync } from "node:sqlite";
+import mysql from "mysql2/promise";
 import { config } from "dotenv";
 
-const backendDir = fileURLToPath(new URL("../../", import.meta.url));
+export const backendDir = fileURLToPath(new URL("../../", import.meta.url));
 config({ path: resolve(backendDir, ".env"), quiet: true });
-const archivo = process.env.DB_FILE ?? "data/veterinaria.sqlite";
-export const databasePath = archivo === ":memory:" || isAbsolute(archivo)
-  ? archivo : resolve(backendDir, archivo);
-if (databasePath !== ":memory:") mkdirSync(dirname(databasePath), { recursive: true });
-
-// SQLite guarda la base relacional en disco, fuera de la memoria de React.
-export const database = new DatabaseSync(databasePath);
-database.exec("PRAGMA journal_mode = WAL; PRAGMA busy_timeout = 5000;");
-database.exec(readFileSync(resolve(backendDir, "database/schema.sql"), "utf8"));
+export const mysqlConfig = {
+  host: process.env.DB_HOST ?? "127.0.0.1",
+  port: Number(process.env.DB_PORT ?? 3306),
+  user: process.env.DB_USER ?? "root",
+  password: process.env.DB_PASSWORD ?? "",
+  database: process.env.DB_NAME ?? "veterinaria_db",
+  charset: "utf8mb4", dateStrings: true, timezone: "Z",
+};
+export const pool = mysql.createPool({
+  ...mysqlConfig, waitForConnections: true, connectionLimit: 10,
+  queueLimit: 0, connectTimeout: 10000,
+});
 export async function probarConexion(): Promise<void> {
-  database.prepare("SELECT 1").get();
-  console.log(`Base de datos SQLite: ${databasePath}`);
+  const connection = await pool.getConnection();
+  try {
+    await connection.ping();
+    await connection.query("SELECT id FROM citas LIMIT 1");
+    console.log(`Conexión con MySQL establecida: ${mysqlConfig.database}`);
+  } finally { connection.release(); }
 }

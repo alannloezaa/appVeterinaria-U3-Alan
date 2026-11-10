@@ -77,7 +77,7 @@ export function NuevaCitaForm({ onGuardar, onCerrar }: Props) {
             <label htmlFor={`cita-${campo}`} className="mb-2 block text-sm font-semibold">{etiquetas[campo]}</label>
             <input id={`cita-${campo}`} name={campo} required
               type={campo === "fecha" ? "date" : campo === "hora" ? "time" : "text"}
-              maxLength={campo === "mascota" ? 100 : campo === "cliente" || campo === "servicio" ? 120 : undefined}
+              maxLength={campo === "mascota" ? 80 : campo === "cliente" || campo === "servicio" ? 120 : undefined}
               value={datos[campo]} disabled={guardando} aria-invalid={Boolean(errores[campo])}
               aria-describedby={errores[campo] ? `error-${campo}` : undefined}
               onChange={(evento) => { setDatos({ ...datos, [campo]: evento.target.value }); setErrores({ ...errores, [campo]: undefined }); }}

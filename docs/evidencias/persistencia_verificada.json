@@ -1,30 +1,258 @@
 {
-  "base": "backend/data/veterinaria.sqlite",
-  "coinciden_antes_y_despues": true,
-  "integridad_sqlite": "ok",
+  "motor": "MySQL",
+  "version": "8.4.13",
+  "base": "veterinaria_db",
+  "puerto": 3307,
+  "consulta": "SELECT id, mascota, cliente, servicio, DATE_FORMAT(fecha, '%Y-%m-%d') AS fecha, TIME_FORMAT(hora, '%H:%i') AS hora, estado, created_at, updated_at FROM citas ORDER BY id",
+  "integridad": [
+    {
+      "Table": "veterinaria_db.citas",
+      "Op": "check",
+      "Msg_type": "status",
+      "Msg_text": "OK"
+    }
+  ],
+  "estructura": "CREATE TABLE `citas` (\n  `id` int NOT NULL AUTO_INCREMENT,\n  `mascota` varchar(80) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `cliente` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `servicio` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `fecha` date NOT NULL,\n  `hora` time NOT NULL,\n  `estado` enum('solicitada','confirmada','atendida','rechazada','cancelada') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'solicitada',\n  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,\n  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,\n  `horario_activo` tinyint GENERATED ALWAYS AS ((case when (`estado` in (_utf8mb4'solicitada',_utf8mb4'confirmada')) then 1 else NULL end)) VIRTUAL,\n  PRIMARY KEY (`id`),\n  UNIQUE KEY `citas_horario_activo` (`fecha`,`hora`,`horario_activo`)\n) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
   "registros": [
     {
+      "id": 1,
+      "mascota": "Max",
+      "cliente": "Ana López",
+      "servicio": "Vacunación",
+      "fecha": "2026-10-28",
+      "hora": "09:00",
+      "estado": "solicitada",
+      "created_at": "2026-11-10 02:38:11",
+      "updated_at": "2026-11-10 02:38:11"
+    },
+    {
+      "id": 2,
+      "mascota": "Voyka",
+      "cliente": "Irvin Chan",
+      "servicio": "Consulta Médica",
+      "fecha": "2026-10-28",
+      "hora": "13:00",
+      "estado": "solicitada",
+      "created_at": "2026-11-10 02:38:11",
+      "updated_at": "2026-11-10 02:38:11"
+    },
+    {
       "id": 3,
+      "mascota": "Firulais",
+      "cliente": "Agapito Pacheco",
+      "servicio": "Esterilizar",
+      "fecha": "2026-10-28",
+      "hora": "15:00",
+      "estado": "solicitada",
+      "created_at": "2026-11-10 02:38:11",
+      "updated_at": "2026-11-10 02:38:11"
+    },
+    {
+      "id": 4,
+      "mascota": "Rocky",
+      "cliente": "María Gómez",
+      "servicio": "Desparasitar",
+      "fecha": "2026-10-28",
+      "hora": "12:00",
+      "estado": "solicitada",
+      "created_at": "2026-11-10 02:38:11",
+      "updated_at": "2026-11-10 02:38:11"
+    },
+    {
+      "id": 5,
       "mascota": "Luna",
       "cliente": "Ana López (demo)",
       "servicio": "Consulta general",
       "fecha": "2026-11-10",
       "hora": "10:30",
       "estado": "confirmada",
-      "created_at": "2026-11-09T22:50:08.206Z",
-      "updated_at": "2026-11-09T22:50:08.390Z"
+      "created_at": "2026-11-09 22:50:08",
+      "updated_at": "2026-11-09 22:50:08"
     },
     {
-      "id": 4,
+      "id": 6,
       "mascota": "Max",
       "cliente": "Ana López (demo)",
       "servicio": "Consulta general",
       "fecha": "2026-11-10",
       "hora": "11:30",
-      "estado": "solicitada",
-      "created_at": "2026-11-09T22:50:08.466Z",
-      "updated_at": "2026-11-09T22:50:08.466Z"
+      "estado": "confirmada",
+      "created_at": "2026-11-09 22:50:08",
+      "updated_at": "2026-11-09 23:09:12"
+    },
+    {
+      "id": 7,
+      "mascota": "Nala",
+      "cliente": "Cliente de prueba U3",
+      "servicio": "Vacunación",
+      "fecha": "2026-11-11",
+      "hora": "09:30",
+      "estado": "confirmada",
+      "created_at": "2026-11-10 02:47:41",
+      "updated_at": "2026-11-10 02:47:41"
     }
   ],
-  "prueba": "Se cerró el proceso del backend, se copió el proyecto y se arrancó desde la carpeta final."
+  "reinicioBackend": true,
+  "reinicioMySQL": false,
+  "coinciden": true,
+  "sha256Antes": "c4517422ca1537031beb51bc55fdd06dfa11d6502f19a2dfe92e82fbc3b05225",
+  "sha256Despues": "c4517422ca1537031beb51bc55fdd06dfa11d6502f19a2dfe92e82fbc3b05225",
+  "antes": [
+    {
+      "id": 1,
+      "mascota": "Max",
+      "cliente": "Ana López",
+      "servicio": "Vacunación",
+      "fecha": "2026-10-28",
+      "hora": "09:00",
+      "estado": "solicitada",
+      "created_at": "2026-11-10 02:38:11",
+      "updated_at": "2026-11-10 02:38:11"
+    },
+    {
+      "id": 2,
+      "mascota": "Voyka",
+      "cliente": "Irvin Chan",
+      "servicio": "Consulta Médica",
+      "fecha": "2026-10-28",
+      "hora": "13:00",
+      "estado": "solicitada",
+      "created_at": "2026-11-10 02:38:11",
+      "updated_at": "2026-11-10 02:38:11"
+    },
+    {
+      "id": 3,
+      "mascota": "Firulais",
+      "cliente": "Agapito Pacheco",
+      "servicio": "Esterilizar",
+      "fecha": "2026-10-28",
+      "hora": "15:00",
+      "estado": "solicitada",
+      "created_at": "2026-11-10 02:38:11",
+      "updated_at": "2026-11-10 02:38:11"
+    },
+    {
+      "id": 4,
+      "mascota": "Rocky",
+      "cliente": "María Gómez",
+      "servicio": "Desparasitar",
+      "fecha": "2026-10-28",
+      "hora": "12:00",
+      "estado": "solicitada",
+      "created_at": "2026-11-10 02:38:11",
+      "updated_at": "2026-11-10 02:38:11"
+    },
+    {
+      "id": 5,
+      "mascota": "Luna",
+      "cliente": "Ana López (demo)",
+      "servicio": "Consulta general",
+      "fecha": "2026-11-10",
+      "hora": "10:30",
+      "estado": "confirmada",
+      "created_at": "2026-11-09 22:50:08",
+      "updated_at": "2026-11-09 22:50:08"
+    },
+    {
+      "id": 6,
+      "mascota": "Max",
+      "cliente": "Ana López (demo)",
+      "servicio": "Consulta general",
+      "fecha": "2026-11-10",
+      "hora": "11:30",
+      "estado": "confirmada",
+      "created_at": "2026-11-09 22:50:08",
+      "updated_at": "2026-11-09 23:09:12"
+    },
+    {
+      "id": 7,
+      "mascota": "Nala",
+      "cliente": "Cliente de prueba U3",
+      "servicio": "Vacunación",
+      "fecha": "2026-11-11",
+      "hora": "09:30",
+      "estado": "confirmada",
+      "created_at": "2026-11-10 02:47:41",
+      "updated_at": "2026-11-10 02:47:41"
+    }
+  ],
+  "despues": [
+    {
+      "id": 1,
+      "mascota": "Max",
+      "cliente": "Ana López",
+      "servicio": "Vacunación",
+      "fecha": "2026-10-28",
+      "hora": "09:00",
+      "estado": "solicitada",
+      "created_at": "2026-11-10 02:38:11",
+      "updated_at": "2026-11-10 02:38:11"
+    },
+    {
+      "id": 2,
+      "mascota": "Voyka",
+      "cliente": "Irvin Chan",
+      "servicio": "Consulta Médica",
+      "fecha": "2026-10-28",
+      "hora": "13:00",
+      "estado": "solicitada",
+      "created_at": "2026-11-10 02:38:11",
+      "updated_at": "2026-11-10 02:38:11"
+    },
+    {
+      "id": 3,
+      "mascota": "Firulais",
+      "cliente": "Agapito Pacheco",
+      "servicio": "Esterilizar",
+      "fecha": "2026-10-28",
+      "hora": "15:00",
+      "estado": "solicitada",
+      "created_at": "2026-11-10 02:38:11",
+      "updated_at": "2026-11-10 02:38:11"
+    },
+    {
+      "id": 4,
+      "mascota": "Rocky",
+      "cliente": "María Gómez",
+      "servicio": "Desparasitar",
+      "fecha": "2026-10-28",
+      "hora": "12:00",
+      "estado": "solicitada",
+      "created_at": "2026-11-10 02:38:11",
+      "updated_at": "2026-11-10 02:38:11"
+    },
+    {
+      "id": 5,
+      "mascota": "Luna",
+      "cliente": "Ana López (demo)",
+      "servicio": "Consulta general",
+      "fecha": "2026-11-10",
+      "hora": "10:30",
+      "estado": "confirmada",
+      "created_at": "2026-11-09 22:50:08",
+      "updated_at": "2026-11-09 22:50:08"
+    },
+    {
+      "id": 6,
+      "mascota": "Max",
+      "cliente": "Ana López (demo)",
+      "servicio": "Consulta general",
+      "fecha": "2026-11-10",
+      "hora": "11:30",
+      "estado": "confirmada",
+      "created_at": "2026-11-09 22:50:08",
+      "updated_at": "2026-11-09 23:09:12"
+    },
+    {
+      "id": 7,
+      "mascota": "Nala",
+      "cliente": "Cliente de prueba U3",
+      "servicio": "Vacunación",
+      "fecha": "2026-11-11",
+      "hora": "09:30",
+      "estado": "confirmada",
+      "created_at": "2026-11-10 02:47:41",
+      "updated_at": "2026-11-10 02:47:41"
+    }
+  ]
 }

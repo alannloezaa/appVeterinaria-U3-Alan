@@ -13,7 +13,7 @@ export function validarCita(cuerpo: unknown): NuevaCita {
   }
   const datos = cuerpo as Record<string, unknown>;
   const errores: Record<string, string> = {};
-  const campos = { mascota: 100, cliente: 120, servicio: 120 };
+  const campos = { mascota: 80, cliente: 120, servicio: 120 };
   const etiquetas = { mascota: "la mascota", cliente: "el cliente", servicio: "el servicio" };
   for (const campo of Object.keys(campos) as Array<keyof typeof campos>) {
     const valor = datos[campo];
@@ -22,7 +22,7 @@ export function validarCita(cuerpo: unknown): NuevaCita {
   }
   const fecha = typeof datos.fecha === "string" ? datos.fecha.trim() : "";
   const fechaReal = new Date(`${fecha}T00:00:00Z`);
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(fecha) || Number.isNaN(fechaReal.getTime()) ||
+  if (!/^[1-9]\d{3}-\d{2}-\d{2}$/.test(fecha) || Number.isNaN(fechaReal.getTime()) ||
       fechaReal.toISOString().slice(0, 10) !== fecha) errores.fecha = "Elige una fecha válida (AAAA-MM-DD).";
   const hora = typeof datos.hora === "string" ? datos.hora.trim() : "";
   if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(hora)) errores.hora = "Elige una hora válida (HH:mm).";
